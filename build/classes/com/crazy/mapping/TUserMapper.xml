@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.crazy.dao.TUserMapper">
+  <resultMap id="BaseResultMap" type="com.crazy.bean.TUser">
+    <id column="uid" jdbcType="INTEGER" property="uid" />
+    <result column="uname" jdbcType="VARCHAR" property="uname" />
+    <result column="upwd" jdbcType="VARCHAR" property="upwd" />
+    <result column="umessage" jdbcType="VARCHAR" property="umessage" />
+    <result column="utime" jdbcType="TIMESTAMP" property="utime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    uid, uname, upwd, umessage, utime
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_user
+    where uid = #{uid,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from t_user
+    where uid = #{uid,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.crazy.bean.TUser">
+    insert into t_user (uid, uname, upwd, 
+      umessage, utime)
+    values (#{uid,jdbcType=INTEGER}, #{uname,jdbcType=VARCHAR}, #{upwd,jdbcType=VARCHAR}, 
+      #{umessage,jdbcType=VARCHAR}, #{utime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.crazy.bean.TUser">
+    insert into t_user
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="uid != null">
+        uid,
+      </if>
+      <if test="uname != null">
+        uname,
+      </if>
+      <if test="upwd != null">
+        upwd,
+      </if>
+      <if test="umessage != null">
+        umessage,
+      </if>
+      <if test="utime != null">
+        utime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="uid != null">
+        #{uid,jdbcType=INTEGER},
+      </if>
+      <if test="uname != null">
+        #{uname,jdbcType=VARCHAR},
+      </if>
+      <if test="upwd != null">
+        #{upwd,jdbcType=VARCHAR},
+      </if>
+      <if test="umessage != null">
+        #{umessage,jdbcType=VARCHAR},
+      </if>
+      <if test="utime != null">
+        #{utime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.crazy.bean.TUser">
+    update t_user
+    <set>
+      <if test="uname != null">
+        uname = #{uname,jdbcType=VARCHAR},
+      </if>
+      <if test="upwd != null">
+        upwd = #{upwd,jdbcType=VARCHAR},
+      </if>
+      <if test="umessage != null">
+        umessage = #{umessage,jdbcType=VARCHAR},
+      </if>
+      <if test="utime != null">
+        utime = #{utime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where uid = #{uid,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.crazy.bean.TUser">
+    update t_user
+    set uname = #{uname,jdbcType=VARCHAR},
+      upwd = #{upwd,jdbcType=VARCHAR},
+      umessage = #{umessage,jdbcType=VARCHAR},
+      utime = #{utime,jdbcType=TIMESTAMP}
+    where uid = #{uid,jdbcType=INTEGER}
+  </update>
+  
+  	<!-- 分页查询 -->
+	<select id="queryAll" parameterType="Map" resultMap="BaseResultMap">
+		select <include refid="Base_Column_List" /> from t_user
+		<where>
+			<if test="uname != null">
+				and uname = #{uname,jdbcType=VARCHAR}
+			</if>
+			<if test="umessage != null">
+				and umessage = #{umessage,jdbcType=VARCHAR}
+			</if>
+		</where>
+		order by utime desc
+		<if test="start!=null and size!=null">
+			limit #{start},#{size}
+		</if>
+	</select>
+	
+	<!-- 查询相册总个数 -->
+	<select id="getTotal" parameterType="Map" resultType="Long">
+		select count(*) from t_user 
+		<where>
+			<if test="uname != null">
+				and uname = #{uname,jdbcType=VARCHAR}
+			</if>
+			<if test="umessage != null">
+				and umessage = #{umessage,jdbcType=VARCHAR}
+			</if>
+		</where>
+	</select>
+</mapper>
